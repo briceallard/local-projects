@@ -19,17 +19,15 @@ int main(int argc, char **argv)
         exit(0);
     }
 
-    Graph G = loadGraphCSV("cities.csv", max_vertices);
+    Graph G = loadGraphCSV("filtered_cities.csv", max_vertices);
 
-    std::cout << "Graph created" << std::endl;
-    
     randomEdges(G,max_edges);
 
-    //G.printGraph();
+    G.printGraph();
 
     std::cout << G.graphViz(false);
 
-    //G.printVids();
+    G.printVids();
 
     int *size = G.graphSize();
 
