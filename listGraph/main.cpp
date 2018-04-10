@@ -2,57 +2,47 @@
 #include "distance.h"
 #include "graph.h"
 
-typedef std::map<std::string, int> StateAbb;
-
-StateAbb fillMap(std::string);
+//StateAbb fillMap(std::string);
 std::string get_user_input(int);
 int num_of_lines(std::string);
 void randomEdges(Graph&, int);
+Graph loadGraph(std::string, std::string, std::string);
 Graph loadGraphCSV(std::string, int);
 Graph loadGraphCSV(std::string, std::string, int);
 
 // Test Driver
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     int max_vertices = 0;
     int max_edges = 0;
-    std::string search;
+    std::string searchType;
+    std::string key;
     std::string filename = "filtered_cities.csv";
 
-    if(argc > 1){
-        //max_vertices = std::stoi(argv[1]);
-        //max_edges = std::stoi(argv[2]);
-        search = argv[1];
-    }else{
-        std::cout << "Usage: ./graph search_state" << std::endl;
-        std::cout << " - search_state = the state you want to add\n"
-                    << "   - enter ALL for all US states or abbreviation\n" 
+    if (argc < 2 || argc > 3) {
+        std::cout << "Usage: ./graph search_type search_key" << std::endl;
+        std::cout << " - search_type = the state you want to add\n"
+                    << "   - enter all for all US states\n" 
+                    << "   - enter state to search by state\n" 
+                    << "   - enter county to search by county\n" 
+                    << "   - enter zip to search by zip\n" 
+                    << std::endl;
+        std::cout << " - search_key = the term you want to add\n"
+                    << "   - enter State, County, or ZIP\n" 
                     << std::endl;
         exit(0);
+    } else if (argc == 2) {
+        searchType = argv[1];
+    }
+    else if(argc == 3){
+        searchType = argv[1];
+        key = argv[2];
     }
 
-    StateAbb stmap = fillMap(filename);
-    StateAbb::iterator mit = stmap.begin();
-
-    if(search == "all" || search == "ALL") {
-        max_vertices = num_of_lines(filename);
-        Graph G = loadGraphCSV(filename, max_vertices);
-        std::cout << "[" << max_vertices << "] vertices loaded into Graph" << std::endl;
-    }
-    else {
-        while(mit != stmap.end()) {
-            if(mit->first == search) {
-                std::cout << mit->first << "::" << mit->second << std::endl;
-                max_vertices = mit->second;
-            }
-            mit++;
-        }
-        Graph G = loadGraphCSV(filename, search);
-    }
+    Graph G = loadGraph(filename, searchType, key);
     
-    //Graph G = loadGraphCSV("filtered_cities.csv", search, max_vertices);
-    //randomEdges(G,max_edges);
-    //G.printGraph();
+    //randomEdges(G, max_edges);
+    G.printGraph();
     //std::cout << G.graphViz(false);
     //G.printVids();
 
@@ -66,6 +56,55 @@ int main(int argc, char **argv)
     return 0;
 }
 
+Graph loadGraph(std::string filename, std::string searchType, std::string key) {
+    
+    Graph G;
+    std::ifstream file(filename);
+
+    int zip;
+    double lat;
+    double lon;
+    std::string strZip;
+    std::string strLat;
+    std::string strLon;
+    std::string city;
+    std::string state;
+    std::string county;
+
+    int count = 1;
+
+    while(std::getline(file, strZip, ',')) {
+        std::getline(file, strLat, ',');
+        std::getline(file, strLon, ',');
+        std::getline(file, city, ',');
+        std::getline(file, state, ',');
+        std::getline(file, county); 
+    
+        zip = std::stoi(strZip);
+        lat = std::stod(strLat);
+        lon = std::stod(strLon);
+
+        if(searchType == "all" || searchType == "ALL") {
+            G.addVertex(city, state, lat, lon);
+            std::cout << searchType << "::[" << count << "]::" << key << std::endl;
+            count++;
+        } else if ((searchType == "COUNTY" || searchType == "county") && county == key) {
+            G.addVertex(city, state, lat, lon);
+            std::cout << searchType << "::[" << count << "]::" << key << std::endl;
+            count++;
+        } else if ((searchType == "STATE" || searchType == "state") && state == key) {
+            G.addVertex(city, state, lat, lon);
+            std::cout << searchType << "::[" << count << "]::" << key << std::endl;
+            count++;
+        } else if ((searchType == "ZIP" || searchType == "zip") && strZip == key) {
+            G.addVertex(city, state, lat, lon);
+            std::cout << searchType << "::[" << count << "]::" << key << std::endl;
+            count++;
+        }
+    }
+    return G;
+}
+
 int num_of_lines(std::string filename) {
     int numLines = 0;
     std::string line;
@@ -75,31 +114,6 @@ int num_of_lines(std::string filename) {
         numLines++;
 
     return numLines;
-}
-StateAbb fillMap(std::string filename) {
-    StateAbb stMap;
-    std::ifstream file(filename);
-    std::string zip;
-    std::string lat;
-    std::string lon;
-    std::string city;
-    std::string state;
-    std::string county;
-
-    while(std::getline(file, zip, ',')) {
-        std::getline(file, lat, ',');
-        std::getline(file, lon, ',');
-        std::getline(file, city, ',');
-        std::getline(file, state, ',');
-        std::getline(file, county);
-
-        if(stMap.find(state) != stMap.end())
-            stMap[state]++;
-        else
-            stMap.insert(StateAbb::value_type(state, 1));
-    }
-
-    return stMap;
 }
 
 std::string get_user_input(int max) {
@@ -123,18 +137,18 @@ std::string get_user_input(int max) {
     }    
 }
 
-void randomEdges(Graph &g,int numEdges){
+void randomEdges(Graph &G,int numEdges){
     int r1,r2;
     latlon from;
     latlon to;
     double d;
     for(int i=0;i<numEdges;i++){
-        r1 = rand() % g.vList.size();
-        r2 = rand() % g.vList.size();
-        from = g.vList[r1]->location;
-        to = g.vList[r2]->location;
+        r1 = rand() % G.vList.size();
+        r2 = rand() % G.vList.size();
+        from = G.vList[r1]->location;
+        to = G.vList[r2]->location;
         d = distanceEarth(from.lat,from.lon,to.lat,to.lon);
-        g.addEdge(r1,r2,(int)d,true);
+        G.addEdge(r1,r2,(int)d,true);
     }
 }
 
@@ -207,8 +221,4 @@ Graph loadGraphCSV(std::string filename, int max = 0)
     }
 
     return G;
-}
-
-Graph loadGraphCSV(std::string filename, std::string, int max = 0) {
-
 }

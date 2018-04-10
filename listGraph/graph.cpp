@@ -92,7 +92,7 @@ std::ostream & operator << (std::ostream& output, const edge& e) {
 vertex::vertex(const int& id,
                const std::string& c, 
                const std::string& s, 
-               const latlon& ll = latlon()) {
+               const latlon& ll) {
     ID = id;
     city = c;
     state = s;
@@ -162,7 +162,7 @@ vertex* Graph::createVertex(const std::string& c, const std::string& s, const la
 //          vector holding all vertices, then returns the unique ID associated
 //          with the particular vertex added
 //////////////////////////////////////////////////////////////////////////////
-int Graph::addVertex(std::string c, std::string s, double lat = 0.0, double lon = 0.0) {
+int Graph::addVertex(std::string c, std::string s, double lat = 0, double lon = 0) {
     if(cityLookup.find(c) == cityLookup.end())
         cityLookup[c] = 0;          // add city as a key to the map
     else
