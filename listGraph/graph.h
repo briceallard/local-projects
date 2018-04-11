@@ -65,6 +65,7 @@ public:
     std::string graphViz(bool);             // prints graphViz document format
     int maxID();                            // return highest ID assigned to a vertex
     int* graphSize();                       // returns the number of vertices and edges
+    void set_maxEdges();                 // Sets numEdges equal to int passed in
 
     // Overload Operators
     Graph operator = (const Graph&);       // Copy overload
@@ -72,8 +73,9 @@ public:
     // Variables
     std::vector<vertex*> vList;             // vector holding all vertices
 
-protected:
+private:
     int ID;                                 // id counter for new vertices
     int numEdges;                           // edge count (total)
+    int maxEdges;                           // Max edges allowed
     strint cityLookup;                      // map used for searching
 };

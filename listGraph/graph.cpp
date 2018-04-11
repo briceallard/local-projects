@@ -190,13 +190,12 @@ int Graph::addVertex(std::string c, std::string s, double lat = 0, double lon = 
 void Graph::addEdge(int fromID, int toID, double weight = 0, bool directed = false) {
     edge e1(toID, weight);
     vList[fromID]->E.push_back(e1);
-    numEdges++;
 
     if(!directed) {
         edge e2(fromID, weight);
         vList[toID]->E.push_back(e2);
-        numEdges++;
     }
+    numEdges++;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -322,6 +321,20 @@ int* Graph::graphSize() {
     vals[0] = vList.size();
     vals[1] = numEdges;
     return vals;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//          set_numEdges
+// Params:  int size (number of edges to be set)
+// Returns: void
+// Desc:    returns the values of vList.size and numEdges
+//////////////////////////////////////////////////////////////////////////////
+void Graph::set_maxEdges() {
+    int edges;
+    std::cout << "Edges: ";
+    std::cin >> edges;
+
+    maxEdges = numEdges * edges;
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1,10 +1,10 @@
 #include "csv.h"
 #include "distance.h"
 #include "graph.h"
+#include <algorithm>
 
-//StateAbb fillMap(std::string);
-std::string get_user_input(int);
 int num_of_lines(std::string);
+void closestEdges(Graph&);
 void randomEdges(Graph&, int);
 Graph loadGraph(std::string, std::string, std::string);
 Graph loadGraphCSV(std::string, int);
@@ -40,9 +40,9 @@ int main(int argc, char *argv[])
     }
 
     Graph G = loadGraph(filename, searchType, key);
-    
-    //randomEdges(G, max_edges);
-    G.printGraph();
+    closestEdges(G);
+    //randomEdges(G, 100);
+    //G.printGraph();
     //std::cout << G.graphViz(false);
     //G.printVids();
 
@@ -70,8 +70,7 @@ Graph loadGraph(std::string filename, std::string searchType, std::string key) {
     std::string city;
     std::string state;
     std::string county;
-
-    int count = 1;
+    int count = 0;
 
     while(std::getline(file, strZip, ',')) {
         std::getline(file, strLat, ',');
@@ -116,25 +115,38 @@ int num_of_lines(std::string filename) {
     return numLines;
 }
 
-std::string get_user_input(int max) {
-    beginning:
-    int selection = 0;
-    std::string user_instructions;
+void closestEdges(Graph &G) {
+    int edgePerV;
+    std::string start;
+    double distance;
+    latlon from;
+    latlon to;
 
-    std::cout << "Would you like to add all [" << max << "] Vertices or a specific state?"
-            << std::endl << " 1. All Vertices\n 2. Add by State\n (1-2): ";
-    std::cin >> selection;
-    
-    switch(selection) {
-        case 1:
-            std::cout << "All Vertices from file will be added" <<std::endl;
-            return user_instructions = "all";
-        case 2:
-            std::cout << "Which state would you like to add?\nEx. 'TX' or 'NC' w/o the ' '" << std::endl;
-            std::cin.ignore();
-            std::getline (std::cin, user_instructions);
-            return user_instructions;
-    }    
+    std::cout << "Center City (Case Sensitive): ";
+    std::cin.ignore();
+    std::getline(std::cin, start);
+
+    // auto it = std::find(G.vList.begin(), G.vList.end(), start);
+    // if(it == G.vList.end()) {
+    //     std::cout << "Enter a city name that is located in the graph ensuring case sensitive" << std::endl;
+    //     goto beginning;
+    // }
+    // else {
+    //     auto startIndex = std::distance(G.vList.begin(), it);
+    //     std::cout << "CENTER CITY::" << G.vList[startIndex]->city << std::endl;
+    // }
+
+
+    std::cout << "Edges per Vertex: ";
+    std::cin >> edgePerV;
+
+    if(std::cin.fail()) {
+        std::cout << "Enter a proper integer!" << std::endl;
+        exit(0);
+    }
+    else {
+        std::cout << "Digit entered!" << std::endl;
+    }
 }
 
 void randomEdges(Graph &G,int numEdges){
