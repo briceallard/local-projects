@@ -33,10 +33,11 @@ int main(int argc, char *argv[])
                     << "   - enter State, County, or ZIP\n" 
                     << std::endl;
         exit(0);
-    } else if (argc == 2) {
+    } 
+    else if (argc == 2) {
         searchType = argv[1];
     }
-    else if(argc == 3){
+    else if(argc == 3) {
         searchType = argv[1];
         key = argv[2];
     }
