@@ -4,11 +4,13 @@
 #include <algorithm>
 #include <utility>
 #include <queue>
-#include <functional>
+
+typedef std::pair<double, int> p_dbint;
 
 Graph loadGraph(std::string, std::string, std::string);
 int num_of_lines(std::string);
 int search(Graph&, std::string);
+bool isValidForEdge(Graph&, int, int, int);
 void closestEdges(Graph&);
 void randomEdges(Graph&, int);
 
@@ -42,11 +44,15 @@ int main(int argc, char *argv[])
         key = argv[2];
     }
 
+    std::ofstream outfile;
+    outfile.open("graphViz.dat");
+
     Graph G = loadGraph(filename, searchType, key);
     closestEdges(G);
     //randomEdges(G, 100);
     G.printGraph();
-    //std::cout << G.graphViz(false);
+
+    outfile << G.graphViz(false);
     //G.printVids();
 
     //int *size = G.graphSize();
@@ -60,7 +66,6 @@ int main(int argc, char *argv[])
 }
 
 Graph loadGraph(std::string filename, std::string searchType, std::string key) {
-    
     Graph G;
     std::ifstream file(filename);
 
@@ -88,22 +93,21 @@ Graph loadGraph(std::string filename, std::string searchType, std::string key) {
 
         if(searchType == "all" || searchType == "ALL") {
             G.addVertex(city, state, lat, lon);
-            std::cout << searchType << "::[" << count << "]::" << key << std::endl;
             count++;
         } else if ((searchType == "COUNTY" || searchType == "county") && county == key) {
             G.addVertex(city, state, lat, lon);
-            std::cout << searchType << "::[" << count << "]::" << key << std::endl;
             count++;
         } else if ((searchType == "STATE" || searchType == "state") && state == key) {
             G.addVertex(city, state, lat, lon);
-            std::cout << searchType << "::[" << count << "]::" << key << std::endl;
             count++;
         } else if ((searchType == "ZIP" || searchType == "zip") && strZip == key) {
             G.addVertex(city, state, lat, lon);
-            std::cout << searchType << "::[" << count << "]::" << key << std::endl;
             count++;
         }
     }
+    std::cout << "[" << searchType << "::" << key << "] found " 
+                << count << " results." << std::endl;
+
     return G;
 }
 
@@ -123,12 +127,23 @@ int search(Graph &G, std::string key) {
     {
         if (G.vList[i]->city == key)
         {
-            std::cout << G.vList[i]->city << "::" << i << "::"
-                      << G.vList[i]->state << " Found!" << std::endl;
+            std::cout << G.vList[i]->city << "::" << G.vList[i]->state 
+                        << "::" << i << " Found!" << std::endl;
             return i;
         }
     }
     return -1;
+}
+
+bool isValidForEdge(Graph &G, int fromID, int toID, int edgePerV) {
+    if(G.vList[fromID]->E.size() < edgePerV) {
+        if(G.vList[toID]->E.size() < edgePerV) {
+            if(fromID != toID) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void closestEdges(Graph &G) {
@@ -136,6 +151,7 @@ void closestEdges(Graph &G) {
     int index;
     std::string key;
     double distance;
+    double totDistance;
     latlon from;
     latlon to;
 
@@ -164,7 +180,6 @@ void closestEdges(Graph &G) {
             break;
     }
 
-    typedef std::pair<double, int> p_dbint;
     std::vector<vertex *> list = G.vList;
     std::vector<p_dbint> closestV;
     std::queue<p_dbint> q;
@@ -178,53 +193,32 @@ void closestEdges(Graph &G) {
             closestV.push_back(std::make_pair(distance, i));
         }
         std::sort(closestV.begin(), closestV.end());
+        q.emplace(closestV[0]);
 
-        // std::cout << "closestV vector:" << std::endl;
-        // for (int i = 0; i < G.vList.size(); i++) {
-        //     int listI = closestV[i].second;
-        //     std::cout << "\t[" << G.vList[listI]->city << "::"
-        //               << G.vList[listI]->ID << "]" << std::endl;
-        // }
+        while(!q.empty()) {
+            int qCount = q.size() - 1;
+            index = q.front().second;
 
-        // int fromID = index;
-        // int fromEdges = G.vList[fromID]->E.size();
-        // int toID;
-        // int toEdges;
-        // double weight;
-        // if(fromEdges <= edgePerV) { 
-        //     for(int i = 1; i <= closestV.size(); i++) {
-        //         toID = G.vList[closestV[i].second]->ID;
-        //         toEdges = G.vList[toID]->E.size();
-        //         weight = closestV[i].first;
-        //         //    !isConnected(G, fromID, toID)
-        //         if(toEdges <= edgePerV) {
-        //             std::cout << "EDGE ADDED" << std::endl;
-        //             G.addEdge(fromID, toID, weight, false);
-        //         }
-        //     }
-        // }
-        // index = G.vList[closestV[toID].second]->ID;
-        // closestV.clear();
+            for(int i = 1; i <= closestV.size(); i++) {
+                // std::cout << "LOOP" << std::endl;
+                int fromID = index;
+                int toID = G.vList[closestV[i].second]->ID;
+                double weight = closestV[i].first;
+
+                if(isValidForEdge(G, fromID, toID, edgePerV) && qCount < edgePerV) {
+                    q.emplace(closestV[i]);
+                    G.addEdge(fromID, toID, weight, false);
+                    totDistance += weight;
+                    qCount++;
+                }
+            }
+            q.pop();
+        }
+        closestV.clear();
     }
 
-        // for (int i = 0; i < closestV.size(); i++)
-        // {
-        //     q.emplace(closestV[i]);
-        // }
-
-        // std::cout << "Regular Queue:" << std::endl;
-        // while (!q.empty()) {
-        //     std::cout << "\t[" << q.front().first << "::"
-        //               << q.front().second << "]" << std::endl;
-        //     q.pop();
-        // }
-
-        // std::cout << "vList vector:" << std::endl;
-        // for (int i = 0; i < G.vList.size(); i++) {
-        //     std::cout << "\t[" << G.vList[i]->city << "::"
-        //               << G.vList[i]->ID << "]" << std::endl;
-        // }
-
+    std::cout << G.getNumEdges() << " edges were created traveling in total "
+                << totDistance << " miles." << std::endl;
 }
 
 void randomEdges(Graph &G,int numEdges){

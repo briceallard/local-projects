@@ -324,6 +324,17 @@ int* Graph::graphSize() {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+//          getNumEdges
+// Params:  none
+// Returns: int (the number of edges total in graph)
+// Desc:    returns the exact number of edges created during the construction
+//          of the graph
+//////////////////////////////////////////////////////////////////////////////
+int Graph::getNumEdges() {
+    return numEdges;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 //          set_numEdges
 // Params:  int size (number of edges to be set)
 // Returns: void

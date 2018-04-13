@@ -65,6 +65,7 @@ public:
     std::string graphViz(bool);             // prints graphViz document format
     int maxID();                            // return highest ID assigned to a vertex
     int* graphSize();                       // returns the number of vertices and edges
+    int getNumEdges();                      // returns the number of edges in complete graph
     void set_maxEdges();                    // Sets numEdges equal to int passed in
 
     // Overload Operators
