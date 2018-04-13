@@ -3,6 +3,8 @@
 #include "graph.h"
 #include <algorithm>
 #include <utility>
+#include <queue>
+#include <functional>
 
 Graph loadGraph(std::string, std::string, std::string);
 int num_of_lines(std::string);
@@ -42,7 +44,7 @@ int main(int argc, char *argv[])
     Graph G = loadGraph(filename, searchType, key);
     closestEdges(G);
     //randomEdges(G, 100);
-    //G.printGraph();
+    G.printGraph();
     //std::cout << G.graphViz(false);
     //G.printVids();
 
@@ -161,26 +163,67 @@ void closestEdges(Graph &G) {
             break;
     }
 
-    std::vector<std::pair<double, int> > closestV;
+    typedef std::pair<double, int> p_dbint;
+    std::vector<vertex *> list = G.vList;
+    std::vector<p_dbint> closestV;
+    std::queue<p_dbint> q;
 
-    for(int i = 0; i < G.vList.size(); i++) {
-        from = G.vList[index]->location;
-        to = G.vList[i]->location;
-        distance = distanceEarth(from.lat, from.lon, to.lat, to.lon);
-        closestV.push_back(std::make_pair(distance, i));
+    for(int j = 0; j < G.vList.size(); j++) {
+        // Get closest surrounding vertices
+        for(int i = 0; i < G.vList.size(); i++) {
+            from = G.vList[index]->location;
+            to = G.vList[i]->location;
+            distance = distanceEarth(from.lat, from.lon, to.lat, to.lon);
+            closestV.push_back(std::make_pair(distance, i));
+        }
+        std::sort(closestV.begin(), closestV.end());
+
+        // std::cout << "closestV vector:" << std::endl;
+        // for (int i = 0; i < G.vList.size(); i++) {
+        //     int listI = closestV[i].second;
+        //     std::cout << "\t[" << G.vList[listI]->city << "::"
+        //               << G.vList[listI]->ID << "]" << std::endl;
+        // }
+
+        // int fromID = index;
+        // int fromEdges = G.vList[fromID]->E.size();
+        // int toID;
+        // int toEdges;
+        // double weight;
+        // if(fromEdges <= edgePerV) { 
+        //     for(int i = 1; i <= closestV.size(); i++) {
+        //         toID = G.vList[closestV[i].second]->ID;
+        //         toEdges = G.vList[toID]->E.size();
+        //         weight = closestV[i].first;
+        //         //    !isConnected(G, fromID, toID)
+        //         if(toEdges <= edgePerV) {
+        //             std::cout << "EDGE ADDED" << std::endl;
+        //             G.addEdge(fromID, toID, weight, false);
+        //         }
+        //     }
+        // }
+        // index = G.vList[closestV[toID].second]->ID;
+        // closestV.clear();
     }
 
-    std::sort(closestV.begin(), closestV.end());
+        // for (int i = 0; i < closestV.size(); i++)
+        // {
+        //     q.emplace(closestV[i]);
+        // }
 
-    for(int i = 1; i <= edgePerV; i++) {
-        std::cout << '[' << closestV[i].first << "::" 
-                    << closestV[i].second << ']' << std::endl;
+        // std::cout << "Regular Queue:" << std::endl;
+        // while (!q.empty()) {
+        //     std::cout << "\t[" << q.front().first << "::"
+        //               << q.front().second << "]" << std::endl;
+        //     q.pop();
+        // }
 
-        index = closestV[i].second;
+        // std::cout << "vList vector:" << std::endl;
+        // for (int i = 0; i < G.vList.size(); i++) {
+        //     std::cout << "\t[" << G.vList[i]->city << "::"
+        //               << G.vList[i]->ID << "]" << std::endl;
+        // }
 
-        std::cout << G.vList[index]->city << "::" << index << "::"
-                << G.vList[index]->state << std::endl;
-    }
 }
 
 void randomEdges(Graph &G,int numEdges){
