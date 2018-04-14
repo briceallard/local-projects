@@ -75,6 +75,7 @@ public:
     std::vector<vertex*> vList;             // vector holding all vertices
 
 private:
+    int edgePerV;                           // How many edges per vertex
     int ID;                                 // id counter for new vertices
     int numEdges;                           // edge count (total)
     int maxEdges;                           // Max edges allowed
