@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
     Graph G = loadGraph(filename, searchType, key);
     closestEdges(G);
     outfile << G.graphViz(false);
+    finished(G);
     //randomEdges(G, 100);
     //G.printGraph();
     //G.printVids();
@@ -241,7 +242,6 @@ void closestEdges(Graph &G) {
 
     // Cycle through all vertices
     for(int j = 0; j < G.vList.size(); j++) {
-
         // Get closest surrounding vertices
         for(int i = 0; i < G.vList.size(); i++) {
             from = G.vList[index]->location;
@@ -257,7 +257,16 @@ void closestEdges(Graph &G) {
         // if q is empty, no more edges to add
         while(!q.empty()) {
             int qCount = q.size() - 1;  // preventer for edgePerV
-            index = q.front().second;   // update new starting location
+
+            // Update closest surrounding vertices
+            for (int i = 0; i < G.vList.size(); i++) {
+                from = G.vList[index]->location;
+                to = G.vList[i]->location;
+                distance = distanceEarth(from.lat, from.lon, to.lat, to.lon);
+                closestV.push_back(std::make_pair(distance, i));
+            }
+            // Sort them from least to greatest
+            std::sort(closestV.begin(), closestV.end());
 
             // loop through list to find closest (eligible) vertices
             for(int i = 1; i < closestV.size(); i++) {
@@ -273,6 +282,7 @@ void closestEdges(Graph &G) {
                     qCount++;
                 }
             }
+            index = q.front().second;   // update new starting location
             q.pop();    // remove vertex where limit of edges was reached
         }
         closestV.clear();   // clear list to repeat
