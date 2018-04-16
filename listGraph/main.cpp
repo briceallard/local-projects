@@ -28,6 +28,7 @@ int search(Graph&, std::string, std::string);            // find index of user d
 bool isValidForEdge(Graph&, int, int, int);              // verify can add edge
 void closestEdges(Graph&);                               // adds edges to closest distance
 void randomEdges(Graph&, int);                           // adds edges in random
+bool verifyGraph(Graph&);                                // Ensures no danglers
 
 int main(int argc, char *argv[])
 {
@@ -64,7 +65,11 @@ int main(int argc, char *argv[])
     Graph G = loadGraph(filename, searchType, key);
     closestEdges(G);
     outfile << G.graphViz(false);
-    finished(G);
+
+    // Make sure all vertices have at least 1 edge to it
+    if(verifyGraph(G))
+        std::cout << "Dangler found! Result is a broken graph ..." << std::endl;
+
     //randomEdges(G, 100);
     //G.printGraph();
     //G.printVids();
@@ -259,12 +264,12 @@ void closestEdges(Graph &G) {
             int qCount = q.size() - 1;  // preventer for edgePerV
 
             // Update closest surrounding vertices
-            for (int i = 0; i < G.vList.size(); i++) {
-                from = G.vList[index]->location;
-                to = G.vList[i]->location;
-                distance = distanceEarth(from.lat, from.lon, to.lat, to.lon);
-                closestV.push_back(std::make_pair(distance, i));
-            }
+            // for (int i = 0; i < G.vList.size(); i++) {
+            //     from = G.vList[index]->location;
+            //     to = G.vList[i]->location;
+            //     distance = distanceEarth(from.lat, from.lon, to.lat, to.lon);
+            //     closestV.push_back(std::make_pair(distance, i));
+            // }
             // Sort them from least to greatest
             std::sort(closestV.begin(), closestV.end());
 
@@ -315,4 +320,13 @@ void randomEdges(Graph &G,int numEdges){
         d = distanceEarth(from.lat,from.lon,to.lat,to.lon);
         G.addEdge(r1,r2,(int)d,true);
     }
+}
+
+bool verifyGraph(Graph &G) {
+    for(int i = 0; i < G.vList.size(); i++) {
+        if(G.vList[i]->E.size() == 0) {
+            return true;
+        }
+    }
+    return false;
 }
