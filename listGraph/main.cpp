@@ -264,12 +264,12 @@ void closestEdges(Graph &G) {
             int qCount = q.size() - 1;  // preventer for edgePerV
 
             // Update closest surrounding vertices
-            // for (int i = 0; i < G.vList.size(); i++) {
-            //     from = G.vList[index]->location;
-            //     to = G.vList[i]->location;
-            //     distance = distanceEarth(from.lat, from.lon, to.lat, to.lon);
-            //     closestV.push_back(std::make_pair(distance, i));
-            // }
+            for (int i = 0; i < G.vList.size(); i++) {
+                from = G.vList[index]->location;
+                to = G.vList[i]->location;
+                distance = distanceEarth(from.lat, from.lon, to.lat, to.lon);
+                closestV.push_back(std::make_pair(distance, i));
+            }
             // Sort them from least to greatest
             std::sort(closestV.begin(), closestV.end());
 
