@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
     int max_edges = 0;
     std::string searchType;
     std::string key;
+    std::string location;
     std::string filename = "filtered_cities.csv";
 
     if (argc < 2 || argc > 3) {
@@ -60,13 +61,22 @@ int main(int argc, char *argv[])
         key = argv[2];
     }
 
-    std::ofstream outfile;
-    outfile.open("graphViz.dat");
+    // initiate output files for writing
+    std::ofstream graphFile;
+    graphFile.open("graphViz.dat");
+    std::ofstream resultsFile;
+    resultsFile.open("results.txt", std::ofstream::app);
+
+    // Execute graph program
     Graph G = loadGraph(filename, searchType, key);
     index = search(G);
     closestEdges(G, index);
-    outfile << G.graphViz(false);
-    G.printResults();
+
+    // Print data
+    graphFile << G.graphViz(false);
+    G.printResults(resultsFile);
+    graphFile.close();
+    resultsFile.close();
 
     //randomEdges(G, 100);
     //G.printGraph();
@@ -170,6 +180,8 @@ int search(Graph &G) {
         std::cout << "Enter Starting Location:\n(Ex. Wichita Falls,TX) ";
         std::getline(std::cin, keyCity, ',');
         std::getline(std::cin, keyState);
+
+        G.startLoc = keyCity + ", " + keyState;
         
         for (std::vector<int>::size_type i = 0; i != G.vList.size(); i++) {
             if (G.vList[i]->city == keyCity && G.vList[i]->state == keyState) {

@@ -254,10 +254,13 @@ void Graph::printVids(){
 // Desc:    Outputs the total number of edges created and the total distance
 //          traveled between all edges.
 //////////////////////////////////////////////////////////////////////////////
-void Graph::printResults() {
+void Graph::printResults(std::ostream &outfile) {
     std::cout << getNumEdges() << " edges were created traveling in total "
               << std::fixed << std::setprecision(4) << getTotDistance()
               << " miles." << std::endl;
+    outfile << " - " << startLoc << std::endl;
+    outfile << "\t" << std::fixed << std::setprecision(4) << getTotDistance() 
+            << " miles " << getNumEdges() << " edges" << std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -63,7 +63,7 @@ public:
     void addEdge(std::string, std::string, double, bool);   // add edge between two vertices
     void printGraph();                      // print the graph for debugging
     void printVids();                       // print the vertex ID's for debugging
-    void printResults();                    // print edge/distance results
+    void printResults(std::ostream&);       // print edge/distance results
     std::string graphViz(bool);             // prints graphViz document format
     int maxID();                            // return highest ID assigned to a vertex
     int* graphSize();                       // returns the number of vertices and edges
@@ -79,6 +79,7 @@ public:
     std::vector<vertex*> vList;             // vector holding all vertices
     int edgePerV;                           // How many edges per vertex
     double totDistance;                     // Total Distance traveled between Vertices
+    std::string startLoc;                    // Name of starting Location
 
 private:
     int ID;                                 // id counter for new vertices
