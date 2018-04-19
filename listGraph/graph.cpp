@@ -248,6 +248,19 @@ void Graph::printVids(){
 }
 
 //////////////////////////////////////////////////////////////////////////////
+//          printResults
+// Params:  None
+// Returns: None
+// Desc:    Outputs the total number of edges created and the total distance
+//          traveled between all edges.
+//////////////////////////////////////////////////////////////////////////////
+void Graph::printResults() {
+    std::cout << getNumEdges() << " edges were created traveling in total "
+              << std::fixed << std::setprecision(4) << getTotDistance()
+              << " miles." << std::endl;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 //          graphViz
 // Params:  bool directed (graph defaults to directed = true)
 // Returns: string viz
@@ -255,7 +268,7 @@ void Graph::printVids(){
 //          Graphviz is used to automatically generate graphs
 //          http://www.webgraphviz.com/
 //////////////////////////////////////////////////////////////////////////////
-std::string Graph::graphViz(bool directed = true){
+std::string Graph::graphViz(bool directed = true) {
     std::vector<vertex *>::iterator vit;
     std::vector<edge>::iterator eit;
 
@@ -332,6 +345,27 @@ int* Graph::graphSize() {
 //////////////////////////////////////////////////////////////////////////////
 int Graph::getNumEdges() {
     return numEdges;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//          getTotDistance
+// Params:  none
+// Returns: int (the number of edges total in graph)
+// Desc:    returns the exact number of edges created during the construction
+//          of the graph
+//////////////////////////////////////////////////////////////////////////////
+int Graph::getTotDistance() {
+    return totDistance;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//          getEdgePerV
+// Params:  none
+// Returns: int (the number of edges per vertex)
+// Desc:    returns the exact number of edges allowed per vertex
+//////////////////////////////////////////////////////////////////////////////
+int Graph::getEdgePerV() {
+    return edgePerV;
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
 #include <map>
@@ -62,10 +63,13 @@ public:
     void addEdge(std::string, std::string, double, bool);   // add edge between two vertices
     void printGraph();                      // print the graph for debugging
     void printVids();                       // print the vertex ID's for debugging
+    void printResults();                    // print edge/distance results
     std::string graphViz(bool);             // prints graphViz document format
     int maxID();                            // return highest ID assigned to a vertex
     int* graphSize();                       // returns the number of vertices and edges
     int getNumEdges();                      // returns the number of edges in complete graph
+    int getTotDistance();                   // returns total distance between all edges on graph
+    int getEdgePerV();                      // returns number of edges per vertice
     void set_maxEdges();                    // Sets numEdges equal to int passed in
 
     // Overload Operators
@@ -73,9 +77,10 @@ public:
 
     // Variables
     std::vector<vertex*> vList;             // vector holding all vertices
+    int edgePerV;                           // How many edges per vertex
+    double totDistance;                     // Total Distance traveled between Vertices
 
 private:
-    int edgePerV;                           // How many edges per vertex
     int ID;                                 // id counter for new vertices
     int numEdges;                           // edge count (total)
     int maxEdges;                           // Max edges allowed
