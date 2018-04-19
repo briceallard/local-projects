@@ -14286,7 +14286,6 @@
 66959,39.8603,-97.4985,Munden,KS,Republic
 66960,39.9607,-97.4286,Narka,KS,Republic
 66967,39.7886,-98.6734,Smith Center,KS,Smith
-66952,39.8097,-98.5557,Lebanon,KS,Smith
 66970,39.9354,-98.0354,Webber,KS,Jewell
 67001,37.7797,-97.6366,Andale,KS,Sedgwick
 67004,37.249,-97.6909,Argonia,KS,Sumner
@@ -17103,6 +17102,7 @@
 87048,35.6596,-106.708,Corrales,NM,Sandoval
 87049,35.1454,-107.837,San Fidel,NM,Cibola
 87051,35.151,-107.877,San Rafael,NM,Cibola
+66952,39.8097,98.5556,Lebanon,KS,Smith
 87052,35.5269,-106.344,Santo Domingo Pueblo,NM,Sandoval
 87053,35.6682,-106.989,San Ysidro,NM,Sandoval
 87057,34.6509,-105.881,Tajique,NM,Torrance
@@ -18951,3 +18951,5 @@
 99927,55.5179,-132.003,Point Baker,AK,Prince Wales Ketchikan
 99928,55.3954,-131.675,Ward Cove,AK,Ketchikan Gateway
 99929,56.4499,-132.364,Wrangell,AK,Wrangell Petersburg
+75001,32.89748,-97.040443,Dallas,TX,Dallas
+33101,25.761681,-80.191788,Miami,FL,Miami
