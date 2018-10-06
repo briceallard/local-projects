@@ -1,3 +1,5 @@
+// main passing data straight to QApplication with no lube
+
 #include "mainwindow.h"
 #include <QApplication>
 
