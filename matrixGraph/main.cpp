@@ -12,6 +12,8 @@
 //  Part 2:
 //  - Takes the graph generated from part 1 and applies Djisktra's Path Finding
 //  - algorithm to find the shortest path between two given vertices.
+//  Part 3:
+//  - Mines bitcoins and spams 18 Mb gifs to local senators.
 //****************************************************************************
 
 #include "graph.h"
